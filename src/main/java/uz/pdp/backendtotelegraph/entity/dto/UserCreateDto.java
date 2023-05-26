@@ -13,5 +13,4 @@ public class UserCreateDto {
     private String username;
     private String password;
     private String email;
-    private List<TelegraphDto> telegraphs;
 }

@@ -18,6 +18,4 @@ public class UserEntity extends BaseEntity {
     private String username;
     private String password;
     private String email;
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
-    private List<TelegraphEntity> telegraphs;
 }

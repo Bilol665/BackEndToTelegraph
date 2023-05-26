@@ -23,11 +23,6 @@ public class UserService {
         if(userCreateDto.getEmail().isBlank() || userCreateDto.getUsername().isBlank() || userCreateDto.getPassword().isBlank()) {
             throw new UserCreationException("User properties are blank!");
         }
-        List<TelegraphDto> telegraphs = userCreateDto.getTelegraphs();
-        for(TelegraphDto telegraphDto:telegraphs) {
-            telegraphDto.setLink(userCreateDto.getUsername() + telegraphDto.getTitle() + UUID.randomUUID());
-        }
-        userCreateDto.setTelegraphs(telegraphs);
         UserEntity map = modelMapper.map(userCreateDto, UserEntity.class);
         return userRepository.save(map);
     }
