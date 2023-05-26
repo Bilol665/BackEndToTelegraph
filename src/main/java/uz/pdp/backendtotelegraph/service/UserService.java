@@ -5,9 +5,14 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.springframework.stereotype.Service;
 import uz.pdp.backendtotelegraph.entity.UserEntity;
+import uz.pdp.backendtotelegraph.entity.dto.TelegraphDto;
 import uz.pdp.backendtotelegraph.entity.dto.UserCreateDto;
+import uz.pdp.backendtotelegraph.exceptions.AuthenticationException;
 import uz.pdp.backendtotelegraph.exceptions.UserCreationException;
 import uz.pdp.backendtotelegraph.repository.UserRepository;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +23,19 @@ public class UserService {
         if(userCreateDto.getEmail().isBlank() || userCreateDto.getUsername().isBlank() || userCreateDto.getPassword().isBlank()) {
             throw new UserCreationException("User properties are blank!");
         }
+        List<TelegraphDto> telegraphs = userCreateDto.getTelegraphs();
+        for(TelegraphDto telegraphDto:telegraphs) {
+            telegraphDto.setLink(userCreateDto.getUsername() + telegraphDto.getTitle() + UUID.randomUUID());
+        }
+        userCreateDto.setTelegraphs(telegraphs);
         UserEntity map = modelMapper.map(userCreateDto, UserEntity.class);
         return userRepository.save(map);
+    }
+
+    public UserEntity signIn(String username, String password) {
+        if(username.isBlank() || password.isBlank()) {
+            throw new AuthenticationException("username or password is empty");
+        }
+        return userRepository.searchUserEntityByUsernameAndPassword(username, password);
     }
 }

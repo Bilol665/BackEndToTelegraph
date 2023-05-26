@@ -13,4 +13,5 @@ public class TelegraphDto {
     private String title;
     private String story;
     private String username;
+    private String link;
 }
