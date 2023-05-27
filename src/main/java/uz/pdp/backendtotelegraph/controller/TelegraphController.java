@@ -1,6 +1,5 @@
 package uz.pdp.backendtotelegraph.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +37,11 @@ public class TelegraphController {
     @GetMapping("/search")
     public ResponseEntity<Object> search(
             @RequestParam(defaultValue = "") String date,
-            @RequestParam(defaultValue = "") String title
+            @RequestParam(defaultValue = "") String title,
+            @RequestParam(defaultValue = "false") boolean sortByTitle,
+            @RequestParam(defaultValue = "false") boolean sortByDate
     ) {
-        List<TelegraphEntity> search = telegraphService.search(date, title);
+        List<TelegraphEntity> search = telegraphService.search(date, title,sortByTitle,sortByDate);
         return new ResponseEntity<>(search,HttpStatus.OK);
     }
 }

@@ -12,8 +12,8 @@ import java.util.UUID;
 @Repository
 public interface TelegraphRepository extends JpaRepository<TelegraphEntity, UUID> {
     List<TelegraphEntity> findTelegraphEntitiesByAuthor(UserEntity author);
-    List<TelegraphEntity> findTelegraphEntitiesByTitleOrderByTitleAsc(String title);
-    List<TelegraphEntity> findTelegraphEntitiesByTitleOrderByTitleDesc(String title);
-    List<TelegraphEntity> findTelegraphEntitiesByCreatedDateOrderByCreatedDateAsc(LocalDateTime createdDate);
-    List<TelegraphEntity> findTelegraphEntitiesByCreatedDateOrderByCreatedDateDesc(LocalDateTime createdDate);
+    List<TelegraphEntity> findTelegraphEntitiesByTitleContainsIgnoreCaseOrderByTitleAsc(String title);
+    List<TelegraphEntity> findTelegraphEntitiesByTitleContainsIgnoreCaseOrderByTitleDesc(String title);
+    List<TelegraphEntity> findTelegraphEntitiesByCreatedDateBetweenOrderByCreatedDateAsc(LocalDateTime createdDate, LocalDateTime createdDate2);
+    List<TelegraphEntity> findTelegraphEntitiesByCreatedDateBetweenOrderByCreatedDateDesc(LocalDateTime createdDate, LocalDateTime createdDate2);
 }
