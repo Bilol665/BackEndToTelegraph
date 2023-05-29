@@ -1,5 +1,6 @@
 package uz.pdp.backendtotelegraph.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,10 @@ public class UserController {
     private final UserService userService;
     @PostMapping(value = "/sign-up")
     public ResponseEntity<Object> signUp(
-            @RequestBody UserCreateDto userCreateDto
+            @Valid @RequestBody UserCreateDto userCreateDto
     ) {
-        userService.add(userCreateDto);
-        return new ResponseEntity<>("You are signed up", HttpStatus.OK);
+        UserEntity add = userService.add(userCreateDto);
+        return new ResponseEntity<>(add, HttpStatus.OK);
     }
     @GetMapping(value = "/sign-in")
     public ResponseEntity<Object> signIn(

@@ -8,6 +8,7 @@ import uz.pdp.backendtotelegraph.entity.UserEntity;
 import uz.pdp.backendtotelegraph.entity.dto.TelegraphDto;
 import uz.pdp.backendtotelegraph.entity.dto.UserCreateDto;
 import uz.pdp.backendtotelegraph.exceptions.AuthenticationException;
+import uz.pdp.backendtotelegraph.exceptions.DataNotException;
 import uz.pdp.backendtotelegraph.exceptions.UserCreationException;
 import uz.pdp.backendtotelegraph.repository.UserRepository;
 
@@ -23,8 +24,12 @@ public class UserService {
         if(userCreateDto.getEmail().isBlank() || userCreateDto.getUsername().isBlank() || userCreateDto.getPassword().isBlank()) {
             throw new UserCreationException("User properties are blank!");
         }
-        UserEntity map = modelMapper.map(userCreateDto, UserEntity.class);
-        return userRepository.save(map);
+        try {
+            UserEntity map = modelMapper.map(userCreateDto, UserEntity.class);
+            return userRepository.save(map);
+        } catch (Exception e) {
+            throw new DataNotException("User with this username is already exists!");
+        }
     }
 
     public UserEntity signIn(String username, String password) {
