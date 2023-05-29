@@ -44,4 +44,10 @@ public class TelegraphController {
         List<TelegraphEntity> search = telegraphService.search(date, title,sortByTitle,sortByDate);
         return new ResponseEntity<>(search,HttpStatus.OK);
     }
+    @GetMapping("/{link}")
+    public ResponseEntity<Object> getByLink(
+            @PathVariable String link
+    ) {
+        return new ResponseEntity<>(telegraphService.getByLink(link),HttpStatus.OK);
+    }
 }

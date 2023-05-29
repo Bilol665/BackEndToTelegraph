@@ -13,7 +13,6 @@ import uz.pdp.backendtotelegraph.exceptions.TelegraphNotCreatedException;
 import uz.pdp.backendtotelegraph.repository.TelegraphRepository;
 import uz.pdp.backendtotelegraph.repository.UserRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class TelegraphService {
             throw new DataNotException("User not found!");
         }
         map.setAuthor(userEntity);
-        map.setLink(userEntity.getUsername() + map.getTitle() + LocalDate.now());
+        map.setLink(userEntity.getUsername() + map.getTitle() + LocalDateTime.now().getSecond());
         try {
             telegraphRepository.save(map);
         } catch (Exception e) {
@@ -52,7 +51,7 @@ public class TelegraphService {
         List<TelegraphEntity> res = new ArrayList<>();
         List<TelegraphEntity> telegraphEntitiesByAuthor;
         try {
-            telegraphEntitiesByAuthor = telegraphRepository.findTelegraphEntitiesByAuthor(userRepository.findById(userId).orElseThrow((Supplier<Throwable>) () -> new DataNotException("User not found")));
+            telegraphEntitiesByAuthor = telegraphRepository.findTelegraphEntitiesByAuthorOrderByCreatedDateAsc(userRepository.findById(userId).orElseThrow((Supplier<Throwable>) () -> new DataNotException("User not found")));
         } catch (Throwable e) {
             throw new DataNotException("User not found!");
         }
@@ -88,5 +87,12 @@ public class TelegraphService {
             }
         }
         throw new TelegraphInvalidException("Date is invalid!");
+    }
+    public TelegraphEntity getByLink(String link) {
+        try {
+            return telegraphRepository.findTelegraphEntityByLinkContainsIgnoreCaseOrderByLinkAsc(link);
+        } catch (Exception e) {
+            throw new DataNotException("Link not found!");
+        }
     }
 }
