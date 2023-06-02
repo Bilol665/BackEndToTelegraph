@@ -2,18 +2,13 @@ package uz.pdp.backendtotelegraph.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration;
 import org.springframework.stereotype.Service;
 import uz.pdp.backendtotelegraph.entity.UserEntity;
-import uz.pdp.backendtotelegraph.entity.dto.TelegraphDto;
 import uz.pdp.backendtotelegraph.entity.dto.UserCreateDto;
 import uz.pdp.backendtotelegraph.exceptions.AuthenticationException;
 import uz.pdp.backendtotelegraph.exceptions.DataNotException;
 import uz.pdp.backendtotelegraph.exceptions.UserCreationException;
 import uz.pdp.backendtotelegraph.repository.UserRepository;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
