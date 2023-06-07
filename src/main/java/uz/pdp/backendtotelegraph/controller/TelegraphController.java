@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/telegraph")
+@RequestMapping("/api/v1/telegraph")
 public class TelegraphController {
     private final TelegraphService telegraphService;
 

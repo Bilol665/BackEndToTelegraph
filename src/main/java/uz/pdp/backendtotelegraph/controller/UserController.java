@@ -7,12 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.backendtotelegraph.entity.UserEntity;
+import uz.pdp.backendtotelegraph.entity.dto.LoginDto;
 import uz.pdp.backendtotelegraph.entity.dto.UserCreateDto;
 import uz.pdp.backendtotelegraph.exceptions.TelegraphInvalidException;
 import uz.pdp.backendtotelegraph.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/auth/")
 public class UserController {
     private final UserService userService;
     @PostMapping(value = "/sign-up")
@@ -26,12 +28,10 @@ public class UserController {
         UserEntity add = userService.add(userCreateDto);
         return new ResponseEntity<>(add, HttpStatus.OK);
     }
-    @GetMapping(value = "/sign-in")
+    @GetMapping(value = "/login")
     public ResponseEntity<Object> signIn(
-            @RequestParam(defaultValue = "") String username,
-            @RequestParam(defaultValue = "") String password
+            @RequestBody LoginDto login
     ) {
-        UserEntity userEntity = userService.signIn(username, password);
-        return new ResponseEntity<>(userEntity,HttpStatus.OK);
+        return new ResponseEntity<>(userService.login(login),HttpStatus.OK);
     }
 }

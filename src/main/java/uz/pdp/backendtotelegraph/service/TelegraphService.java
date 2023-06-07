@@ -2,11 +2,14 @@ package uz.pdp.backendtotelegraph.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import uz.pdp.backendtotelegraph.entity.TelegraphEntity;
 import uz.pdp.backendtotelegraph.entity.UserEntity;
 import uz.pdp.backendtotelegraph.entity.dto.TelegraphDto;
-import uz.pdp.backendtotelegraph.exceptions.DataNotException;
+import uz.pdp.backendtotelegraph.exceptions.DataNotFoundException;
 import uz.pdp.backendtotelegraph.exceptions.PageNotFoundException;
 import uz.pdp.backendtotelegraph.exceptions.TelegraphInvalidException;
 import uz.pdp.backendtotelegraph.exceptions.TelegraphNotCreatedException;
@@ -32,9 +35,9 @@ public class TelegraphService {
         TelegraphEntity map = modelMapper.map(telegraphDto, TelegraphEntity.class);
         UserEntity userEntity;
         try {
-            userEntity = userRepository.findById(userId).orElseThrow((Supplier<Throwable>) () -> new DataNotException("User not found"));
+            userEntity = userRepository.findById(userId).orElseThrow((Supplier<Throwable>) () -> new DataNotFoundException("User not found"));
         } catch (Throwable e) {
-            throw new DataNotException("User not found!");
+            throw new DataNotFoundException("User not found!");
         }
         map.setAuthor(userEntity);
         map.setLink(userEntity.getUsername() + map.getTitle() + LocalDateTime.now().getSecond());
@@ -45,29 +48,10 @@ public class TelegraphService {
         }
     }
     public List<TelegraphEntity> getHisAllSorted(UUID userId,int pageSize,int whichPage) {
-        if(userId == null) {
-            throw new DataNotException("user id not found");
-        }
-        List<TelegraphEntity> res = new ArrayList<>();
-        List<TelegraphEntity> telegraphEntitiesByAuthor;
-        try {
-            telegraphEntitiesByAuthor = telegraphRepository.findTelegraphEntitiesByAuthorOrderByCreatedDateAsc(userRepository.findById(userId).orElseThrow((Supplier<Throwable>) () -> new DataNotException("User not found")));
-        } catch (Throwable e) {
-            throw new DataNotException("User not found!");
-        }
-        int size = telegraphEntitiesByAuthor.size();
-        if(size <= pageSize) {
-            if(whichPage != 1) {
-                throw new PageNotFoundException("Page not found!");
-            }
-            return telegraphEntitiesByAuthor;
-        }
-        size/=pageSize;
-        if(size < whichPage) throw new PageNotFoundException("Page not found!");
-        for (int i = whichPage*pageSize-pageSize; i < whichPage*pageSize; i++) {
-            res.add(telegraphEntitiesByAuthor.get(i));
-        }
-        return res;
+        Pageable pageable = PageRequest.of(whichPage,pageSize, Sort.by("created_date"));
+        return telegraphRepository.findTelegraphEntitiesByAuthorOrderByCreatedDateAsc(userRepository.findById(userId).orElseThrow(
+                () -> new DataNotFoundException("Author not found!")
+        ),pageable);
     }
 
     public List<TelegraphEntity> search(String date, String title,boolean sortByTitle,boolean sortByDate) {
@@ -92,7 +76,7 @@ public class TelegraphService {
         try {
             return telegraphRepository.findTelegraphEntityByLinkContainsIgnoreCaseOrderByLinkAsc(link);
         } catch (Exception e) {
-            throw new DataNotException("Link not found!");
+            throw new DataNotFoundException("Link not found!");
         }
     }
 }

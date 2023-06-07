@@ -24,8 +24,8 @@ public class ExceptionsHandlerForMyProject {
     public ResponseEntity<Object> telegraphInvalidEx(TelegraphInvalidException e) {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_ACCEPTABLE);
     }
-    @ExceptionHandler(value = {DataNotException.class})
-    public ResponseEntity<Object> dataNotFound(DataNotException e) {
+    @ExceptionHandler(value = {DataNotFoundException.class})
+    public ResponseEntity<Object> dataNotFound(DataNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(value = {PageNotFoundException.class})
